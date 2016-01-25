@@ -1,0 +1,7 @@
+.metadata/.lock
+.metadata/.plugins/org.python.pydev/v1_7r20abey8ti57azl98yy5kpgk/shell/__b_m89bjd3remhgdqe34uncm9hm.top
+*.top
+*.metadata/*
+venv/*
+RemoteSystemsTempFiles/*
+first-webapi/.settings/org.eclipse.core.resources.prefs
