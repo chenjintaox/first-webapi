@@ -7,7 +7,9 @@ Created on 2016/01/21
 '''
 from app import app
 from flask import render_template
+from flask import json
 from flask import jsonify
+
 #导入SHA1
 import os
 from hashlib import sha1
@@ -17,6 +19,7 @@ from hashlib import sha1
 from functools import wraps
 from flask.globals import request
 from flask.helpers import url_for
+from pip._vendor.html5lib.html5parser import method_decorator_metaclass
 
 def check_auth(username, password):
     return username == 'admin' and password == 'token'
@@ -71,5 +74,46 @@ def api_articles():
 def api_article(articleid):
     return 'You are reading ' + articleid
 
-    
 
+###############请求（REQUESTS）############### 
+#GET 参数(GET /hello,/hello?name='zhangsan')
+@app.route('/hello')
+def api_hello():
+    if 'name' in request.args:
+        return 'hello ' + request.args['name']
+    else:
+        return 'hello chenjintaox'
+#请求方式（Request Methods）：['GET', 'POST', 'PATCH', 'PUT', 'DELETE']
+@app.route('/echo', methods=['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
+def api_echo():
+    if request.method == 'GET':
+        return "ECHO:GET\n"
+    elif request.method == 'POST':
+        return "ECHO:POST\n"
+    elif request.method == 'PATCH':
+        return "ECHO:PATCH"
+    elif request.method == 'PUT':
+        return "ECHO:PUT"
+    elif request.method == 'DELETE':
+        return "ECHO:DELETE"
+    
+#请求 数据和头部（Request Data & Headers）
+'''
+传递数据，通常使用POST和PATCH，数据的格式通常包括，纯文本，JSON，XML，二进制，自定义格式；
+通过request.headers（字典）,访问HTTP的头部;
+通过reauest.data（字符串）,访问HTTP数据；
+如果mimetype是application/json，通过request.json访问JSON数据
+''' 
+@app.route('/messages', methods = ['POST'])
+def api_message():
+    if request.headers['Content-Type'] == 'text/plain':
+        return 'Text Message: ' + request.data
+    elif request.headers['Content-Type'] == 'application/json':
+        return 'Json Message: ' + json.dumps(request.json)
+    elif request.headers['Content-Type'] == 'application/octet-stream':
+        f = open('./binary', 'wb')
+        f.write(request.data)
+        f.close()
+        return 'Binary message written!'
+    else:
+        return '415 Unsupported Media Type'
