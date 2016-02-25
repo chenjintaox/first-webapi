@@ -10,6 +10,7 @@ from app import app
 from flask import render_template
 from flask import json
 from flask import jsonify
+import logging
 
 #导入SHA1
 import os
@@ -22,6 +23,11 @@ from flask.globals import request
 from flask.helpers import url_for
 from pip._vendor.html5lib.html5parser import method_decorator_metaclass
 from flask.wrappers import Response
+
+#增加log功能
+file_handler = logging.FileHandler('app.log')
+app.logger.addHandler(file_handler)
+app.logger.setLevel(logging.INFO)
 
 def check_auth(username, password):
     return username == 'admin' and password == 'token'
@@ -81,6 +87,11 @@ def api_article(articleid):
 #GET 参数(GET /hello,/hello?name='zhangsan')
 @app.route('/hello')
 def api_hello():
+    #log功能测试
+    app.logger.info('informing')
+    app.logger.warning('warning')
+    app.logger.error('screaming bloody murder!')
+    
     if 'name' in request.args:
         return 'hello ' + request.args['name']
     else:

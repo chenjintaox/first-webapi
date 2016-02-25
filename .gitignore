@@ -5,3 +5,4 @@
 venv/*
 RemoteSystemsTempFiles/*
 first-webapi/.settings/org.eclipse.core.resources.prefs
+*.log
