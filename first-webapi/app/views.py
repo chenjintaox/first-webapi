@@ -3,7 +3,8 @@
 '''
 Created on 2016/01/21
 
-@author: chen_jintao
+@author: chenjintaox
+参考url：http://blog.luisrei.com/articles/flaskrest.html
 '''
 from app import app
 from flask import render_template
@@ -20,6 +21,7 @@ from functools import wraps
 from flask.globals import request
 from flask.helpers import url_for
 from pip._vendor.html5lib.html5parser import method_decorator_metaclass
+from flask.wrappers import Response
 
 def check_auth(username, password):
     return username == 'admin' and password == 'token'
@@ -117,3 +119,35 @@ def api_message():
         return 'Binary message written!'
     else:
         return '415 Unsupported Media Type'
+    
+###############回应(RESPONSES)###############
+#通过flask的Response class来回应请求
+@app.route('/hi', methods = ['GET'])
+def api_hi():
+    data = {
+        'hello' : 'world',
+        'nmuber' : 3,
+    }
+    js = json.dumps(data)
+    resp = Response(js, status = 200, mimetype='application/json')
+    return resp
+
+###############(Status Codes & Errors)###############
+@app.errorhandler(404)
+def not_found(error = None):
+    message = {
+        'status':404,
+        'message':'not found: ' + request.url,
+    }
+    resp = jsonify(message)
+    resp.status_code = 404
+    return resp
+
+@app.route('/users/<userid>', methods = ['GET'])
+def api_users(userid):
+    users = {'1':'john', '2':'steve', '3':'bill'}
+    
+    if userid in users:
+        return jsonify({userid:users[userid]})
+    else:
+        return not_found()
