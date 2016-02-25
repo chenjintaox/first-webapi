@@ -16,6 +16,7 @@ from hashlib import sha1
 
 from functools import wraps
 from flask.globals import request
+from flask.helpers import url_for
 
 def check_auth(username, password):
     return username == 'admin' and password == 'token'
@@ -55,3 +56,20 @@ def index():
 @requires_auth
 def api_tokens():
     return generate_tokens()
+
+
+###############资源（RESOURCES）###############
+#获取文章列表
+@app.route('/articles')
+def api_articles():
+    return 'List of'+url_for('api_articles')
+#获取指定文章
+#@app.route('/articles/<int:articleid>')
+#@app.route('/articles/<float:articleid>')
+#@app.route('/articles/<path:articleid>')
+@app.route('/articles/<articleid>')
+def api_article(articleid):
+    return 'You are reading ' + articleid
+
+    
+
